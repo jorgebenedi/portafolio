@@ -516,7 +516,7 @@ function SobreMi() {
     <section className="about" id="sobre-mi">
       <Nace como="h2" className="section-title" texto="Sobre mí" retardo={150} paso={40} />
       <div className="about-body">
-        <p>{PERFIL.sobreMi}</p>
+        {[].concat(PERFIL.sobreMi).map((parrafo) => <p key={parrafo.slice(0, 24)}>{parrafo}</p>)}
         {enlaces.length > 0 && (
           <ul className="contact">
             {enlaces.map((e) => (

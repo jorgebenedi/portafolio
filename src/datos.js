@@ -31,9 +31,13 @@ export const PERFIL = {
       texto: 'El juicio de entrenador lo pone la IA; las series, el volumen y las reglas exactas las pone el código. Así es fiable.',
     },
   ],
-  // texto de la sección «Sobre mí»
-  sobreMi:
+  // texto de la sección «Sobre mí»: un párrafo por elemento
+  sobreMi: [
+    'Empecé programando atajos de iPhone para replicar las funciones de Galaxy AI cuando Apple aún no las había integrado en sus dispositivos. Esa curiosidad evolucionó hasta construir aplicaciones donde la inteligencia artificial es el motor principal del producto.',
+    'Hoy llevo ese enfoque a Avanzadi, integrando IA en proyectos reales: desde pipelines RAG hasta automatización de procesos y agentes de IA.',
+    'Mi otra gran curiosidad es la ciberseguridad. Programo en Python y he desarrollado software malicioso para penetrar sistemas en entornos de prueba controlados: entender cómo se ataca un sistema es la mejor forma de saber protegerlo.',
     'Diseño y programo de punta a punta: la interfaz, el backend y la IA que lo mueve. Me interesa que lo digital tenga peso, textura y un poco de atmósfera.',
+  ],
   ubicacion: '', // p. ej. 'Madrid, España'
   // Rellena solo lo que quieras mostrar; lo que quede vacío no aparece en la web.
   contacto: {
