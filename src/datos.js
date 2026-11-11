@@ -4,13 +4,13 @@ export const PERFIL = {
   nombre: 'Jorge',
   rol: 'Desarrollador de inteligencia artificial y automatizaciones',
   frase: 'La IA no sustituye al criterio. Lo multiplica.',
-  // portada: principio, áreas y menú grande de la derecha
-  principio: 'Principio 01',
+  // portada: rótulo de arriba (quién eres, en una línea), áreas y menú grande de la derecha
+  principio: 'Desarrollador de IA y automatizaciones',
   areas: ['Inteligencia artificial', 'Automatizaciones', 'Desarrollo de producto'],
   // cada opción abre su sección; la portada no baja
   menu: [
-    { label: 'Principios', vista: 'principios' },
     { label: 'Proyectos', vista: 'proyectos' },
+    { label: 'Principios', vista: 'principios' },
     { label: 'Sobre mí', vista: 'sobre-mi' },
     { label: 'Contacto', vista: 'contacto' },
   ],
@@ -41,9 +41,9 @@ export const PERFIL = {
   ubicacion: '', // p. ej. 'Madrid, España'
   // Rellena solo lo que quieras mostrar; lo que quede vacío no aparece en la web.
   contacto: {
-    email: '',
+    email: 'jorgebenediadobe@gmail.com',
     github: 'https://github.com/jorgebenedi',
-    linkedin: '',
+    linkedin: 'https://www.linkedin.com/in/jorgebenedi',
   },
 };
 

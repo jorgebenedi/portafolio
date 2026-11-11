@@ -97,6 +97,38 @@ function useEfectosScroll(vista) {
 const VISTAS = ['principios', 'proyectos', 'sobre-mi', 'contacto', ...PROYECTOS.map((p) => p.id)];
 const enlace = (vista) => (vista === 'inicio' ? '#/' : `#/${vista}`);
 
+// El recorrido de quien llega de nuevas: lo que has hecho, cómo piensas, quién eres y cómo escribirte.
+// «Siguiente» al final de cada sección y las flechas del teclado siguen este orden.
+const RECORRIDO = ['inicio', 'proyectos', ...PROYECTOS.map((p) => p.id), 'principios', 'sobre-mi', 'contacto'];
+const tituloDe = (vista) =>
+  PROYECTOS.find((p) => p.id === vista)?.titulo ?? PERFIL.menu.find((m) => m.vista === vista)?.label ?? PERFIL.nombre;
+const esProyecto = (vista) => PROYECTOS.some((p) => p.id === vista);
+
+// Título de la pestaña, foco al cambiar de sección y teclado: ← → recorren, Esc vuelve al inicio
+function useNavegacion(vista) {
+  const primera = useRef(true);
+  useEffect(() => {
+    document.title = vista === 'inicio' ? `${PERFIL.nombre} · Portafolio` : `${tituloDe(vista)} · ${PERFIL.nombre}`;
+    if (primera.current) primera.current = false;
+    else document.getElementById('contenido')?.focus({ preventScroll: true });
+
+    const tecla = (e) => {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      if (e.target.closest?.('input, textarea, select, [contenteditable="true"]')) return;
+      const i = RECORRIDO.indexOf(vista);
+      let destino = null;
+      if (e.key === 'ArrowRight') destino = RECORRIDO[i + 1];
+      else if (e.key === 'ArrowLeft') destino = RECORRIDO[i - 1];
+      else if (e.key === 'Escape' && vista !== 'inicio') destino = 'inicio';
+      if (!destino) return;
+      e.preventDefault();
+      window.location.hash = enlace(destino);
+    };
+    window.addEventListener('keydown', tecla);
+    return () => window.removeEventListener('keydown', tecla);
+  }, [vista]);
+}
+
 function useVista() {
   const leer = () => {
     const h = decodeURIComponent(window.location.hash.replace(/^#\/?/, ''));
@@ -111,46 +143,21 @@ function useVista() {
   return vista;
 }
 
-// A dónde lleva «Volver»: de un proyecto, al índice de proyectos; de cualquier otra sección, a la portada
-function destinoVolver(vista) {
-  if (vista === 'inicio') return null;
-  return PROYECTOS.some((p) => p.id === vista)
-    ? { vista: 'proyectos', label: 'Proyectos' }
-    : { vista: 'inicio', label: 'Inicio' };
-}
-
-// La tecla Escape también vuelve atrás
-function useVolverConEscape(vista) {
-  useEffect(() => {
-    const destino = destinoVolver(vista);
-    if (!destino) return undefined;
-    const alPulsar = (e) => {
-      if (e.key === 'Escape' && !e.defaultPrevented) window.location.hash = enlace(destino.vista);
-    };
-    window.addEventListener('keydown', alPulsar);
-    return () => window.removeEventListener('keydown', alPulsar);
-  }, [vista]);
-}
-
 function Nav({ vista }) {
   const enProyecto = PROYECTOS.some((p) => p.id === vista);
-  const volver = destinoVolver(vista);
   return (
     <header className="nav">
-      <div className="nav-izq">
-        <a href={enlace('inicio')} className="nav-name">{PERFIL.nombre}</a>
-        {volver && (
-          <a href={enlace(volver.vista)} className="nav-volver" aria-label={`Volver a ${volver.label}`}>
-            <span aria-hidden="true">←</span>
-            <span className="nav-volver-texto" aria-hidden="true">{volver.label}</span>
-          </a>
-        )}
-      </div>
+      <a href={enlace('inicio')} className="nav-name">{PERFIL.nombre}</a>
       <nav className="nav-links" aria-label="Secciones">
         {PERFIL.menu.map((m) => {
           const actual = m.vista === vista || (m.vista === 'proyectos' && enProyecto);
           return (
-            <a key={m.vista} href={enlace(m.vista)} aria-current={actual ? 'page' : undefined}>
+            <a
+              key={m.vista}
+              href={enlace(m.vista)}
+              className={m.vista === 'contacto' ? 'nav-contacto' : undefined}
+              aria-current={actual ? 'page' : undefined}
+            >
               {m.label}
             </a>
           );
@@ -394,9 +401,11 @@ function AILabsLive({ datos }) {
 // tipo · año → título → resumen → ventana «En vivo» → ficha → «Cómo está hecho» → bloque final
 function Proyecto({ p }) {
   const final = p.final;
-  const siguiente = PROYECTOS[(PROYECTOS.indexOf(p) + 1) % PROYECTOS.length];
   return (
     <section className="featured" id={p.id}>
+      <a className="volver" href={enlace('proyectos')}>
+        <span aria-hidden="true">←</span> Todos los proyectos
+      </a>
       <div className="section-head">
         <p className="eyebrow">{p.tipo} · {p.año}</p>
         <Nace como="h2" className="featured-title" texto={p.titulo} retardo={150} paso={34} />
@@ -452,14 +461,38 @@ function Proyecto({ p }) {
         )}
         {final.tipo === 'ailabs' && <AILabsLive datos={final} />}
       </div>
-
-      <a className="siguiente" href={enlace(siguiente.id)}>
-        <span className="eyebrow">Siguiente proyecto</span>
-        <span className="siguiente-titulo">
-          <Nace texto={siguiente.titulo} retardo={200} paso={30} /> <span aria-hidden="true">→</span>
-        </span>
-      </a>
     </section>
+  );
+}
+
+// Al final de cada sección, la siguiente del recorrido (y, discreto, la anterior)
+function Siguiente({ vista }) {
+  const i = RECORRIDO.indexOf(vista);
+  const sig = RECORRIDO[i + 1];
+  const ant = RECORRIDO[i - 1];
+  return (
+    <nav className="siguiente-bloque" aria-label="Recorrido">
+      {sig ? (
+        <a className="siguiente" href={enlace(sig)}>
+          <span className="eyebrow">{esProyecto(sig) ? (esProyecto(vista) ? 'Siguiente proyecto' : 'Primer proyecto') : 'Siguiente'}</span>
+          <span className="siguiente-titulo">
+            <Nace texto={tituloDe(sig)} retardo={200} paso={30} /> <span aria-hidden="true">→</span>
+          </span>
+        </a>
+      ) : (
+        <a className="siguiente" href={enlace('proyectos')}>
+          <span className="eyebrow">Fin del recorrido</span>
+          <span className="siguiente-titulo">
+            <Nace texto="Ver los proyectos otra vez" retardo={200} paso={22} /> <span aria-hidden="true">→</span>
+          </span>
+        </a>
+      )}
+      {ant && ant !== 'inicio' && (
+        <a className="anterior" href={enlace(ant)}>
+          <span aria-hidden="true">←</span> {tituloDe(ant)}
+        </a>
+      )}
+    </nav>
   );
 }
 
@@ -536,25 +569,30 @@ function SobreMi() {
 export default function App() {
   const vista = useVista();
   useEfectosScroll(vista);
-  useVolverConEscape(vista);
+  useNavegacion(vista);
   const proyecto = PROYECTOS.find((p) => p.id === vista);
   const portada = vista === 'inicio';
   return (
     <>
+      <a className="saltar" href="#contenido" onClick={(e) => { e.preventDefault(); document.getElementById('contenido')?.focus(); }}>
+        Saltar al contenido
+      </a>
       {!portada && <div className="progress" aria-hidden="true" />}
       <Cursor />
       <Nav vista={vista} />
-      <main key={vista} className={`vista vista-${portada ? 'inicio' : 'seccion'}`}>
+      <main key={vista} id="contenido" tabIndex={-1} className={`vista vista-${portada ? 'inicio' : 'seccion'}`}>
         {portada && <Hero />}
         {vista === 'principios' && <Principios />}
         {vista === 'proyectos' && <IndiceProyectos />}
         {proyecto && <Proyecto p={proyecto} />}
         {vista === 'sobre-mi' && <SobreMi />}
         {vista === 'contacto' && <Contacto />}
+        {!portada && <Siguiente vista={vista} />}
       </main>
       {!portada && (
         <footer className="footer">
           <span>© {new Date().getFullYear()} {PERFIL.nombre}</span>
+          <span className="footer-teclas" aria-hidden="true">← → para moverte · Esc para volver al inicio</span>
           <a href={enlace('inicio')}>← Inicio</a>
         </footer>
       )}
