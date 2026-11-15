@@ -189,7 +189,7 @@ function Orbe() {
   }, []);
   return (
     <div className="orbe" aria-hidden="true">
-      <video ref={ref} src="/portada/orbe.mp4" poster="/portada/orbe-poster.jpg" autoPlay muted loop playsInline preload="auto" />
+      <video ref={ref} src="portada/orbe.mp4" poster="portada/orbe-poster.jpg" autoPlay muted loop playsInline preload="auto" />
     </div>
   );
 }
@@ -308,6 +308,22 @@ function VivoConsola({ vivo, titulo }) {
   );
 }
 
+// Una web real, navegable dentro de la ventana
+function VivoWeb({ vivo, titulo }) {
+  return (
+    <Ventana
+      pista={vivo.pista}
+      acciones={
+        <a href={vivo.src} target="_blank" rel="noreferrer">
+          Abrir la web <span aria-hidden="true">↗</span>
+        </a>
+      }
+    >
+      <iframe src={vivo.src} title={`${titulo}, en vivo`} loading="lazy" />
+    </Ventana>
+  );
+}
+
 // REGAIN AI: la pantalla de carga de la app (la de F5), recreada tal cual
 function VivoCarga({ vivo }) {
   const ref = useRef(null);
@@ -335,7 +351,7 @@ function VivoCarga({ vivo }) {
       <div ref={ref} className="splash" role="img" aria-label="REGAIN AI, Fitness Intelligence">
         <div className="splash-glow" />
         <div className="splash-art">
-          <img src="/proyectos/regain/carga-dragon.jpg" alt="" className="splash-bg" />
+          <img src="proyectos/regain/carga-dragon.jpg" alt="" className="splash-bg" />
         </div>
         <div className="splash-overlay" />
         <div className="splash-content">
@@ -414,6 +430,7 @@ function Proyecto({ p }) {
 
       {p.vivo.tipo === 'consola' && <VivoConsola vivo={p.vivo} titulo={p.titulo} />}
       {p.vivo.tipo === 'carga' && <VivoCarga vivo={p.vivo} />}
+      {p.vivo.tipo === 'web' && <VivoWeb vivo={p.vivo} titulo={p.titulo} />}
 
       <dl className="facts">
         <div>

@@ -71,7 +71,7 @@ export const PROYECTOS = [
     // ventana «En vivo»: la consola real, jugable
     vivo: {
       tipo: 'consola',
-      src: '/second-passenger/index.html',
+      src: 'second-passenger/index.html',
       pista: 'Haz clic en la pantalla para usarla.',
       pistaActiva: 'Escribe un objetivo y pulsa Enter. Las flechas mueven el menú.',
     },
@@ -103,9 +103,9 @@ export const PROYECTOS = [
       titulo: 'Proceso',
       intro: 'De la imagen generada a la escena viva, en tres momentos.',
       imagenes: [
-        { img: '/proyectos/second-passenger/2-escena.jpg', pie: 'La escena completa, con la consola ya integrada en la pared.' },
-        { img: '/proyectos/second-passenger/4-encima.jpg', pie: 'A oscuras, encima del monitor, mientras la terminal sigue encendida.' },
-        { img: '/proyectos/second-passenger/5-salto.jpg', pie: 'El salto final contra la cámara.' },
+        { img: 'proyectos/second-passenger/2-escena.jpg', pie: 'La escena completa, con la consola ya integrada en la pared.' },
+        { img: 'proyectos/second-passenger/4-encima.jpg', pie: 'A oscuras, encima del monitor, mientras la terminal sigue encendida.' },
+        { img: 'proyectos/second-passenger/5-salto.jpg', pie: 'El salto final contra la cámara.' },
       ],
     },
   },
@@ -118,11 +118,11 @@ export const PROYECTOS = [
     resumen:
       'Una aplicación que desafía los límites de la innovación en el fitness, combinando inteligencia artificial y ciencia para llevar tu progreso en el gimnasio al siguiente nivel. Un entrenador personal potenciado con IA que genera rutinas y programas por semanas, analiza cada entrenamiento, realiza check-ins semanales y utiliza datos de Apple Salud para interpretar tu sueño, pasos y actividad cardiovascular. Todo diseñado para convertir tus datos en progreso real.',
     stack: ['React', 'Expo', 'Node', 'MongoDB', 'OpenAI', 'Stripe'],
-    // ventana «En vivo»: la pantalla de carga de la app, tal cual
+    // ventana «En vivo»: la landing real, navegable dentro de la página
     vivo: {
-      tipo: 'carga',
-      href: 'https://app.regainaifitness.com',
-      pista: 'La pantalla de carga de la app, tal cual.',
+      tipo: 'web',
+      src: 'https://www.regainaifitness.com',
+      pista: 'La landing en producción. Se puede recorrer aquí mismo.',
     },
     claves: [
       {
@@ -151,8 +151,8 @@ export const PROYECTOS = [
       tipo: 'ailabs',
       titulo: 'AI Labs',
       intro: 'Siete módulos de IA que cada usuario activa a su medida. Lo que no se activa, ni se calcula ni aparece.',
-      video: '/proyectos/regain/ailabs-fondo.mp4',
-      poster: '/proyectos/regain/ailabs-fondo.jpg',
+      video: 'proyectos/regain/ailabs-fondo.mp4',
+      poster: 'proyectos/regain/ailabs-fondo.jpg',
       modulos: [
         { nombre: 'Funciones de Atlas', texto: 'Añade al check-in solo lo que se quiere usar.' },
         { nombre: 'Body Architect', texto: 'Análisis de la técnica y seguimiento biométrico con visión por computador.' },
